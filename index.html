@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Masukkan hanya CSS asas dari style-source.css di sini */
+        .hide-anim { display: none; }
+        .animation-in { /* kod animasi masuk */ }
+        .animation-out { /* kod animasi keluar */ }
+    </style>
+</head>
+<body>
+    <div id="lower-third-1" class="alt left style-1 hide-anim">
+        <div id="alt-1-name">NAMA TEST</div>
+        <div id="alt-1-info">INFO TEST</div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Versi Ringkas tanpa Timer/Slot yang kompleks
+        function showLowerThird(name, info) {
+            $("#alt-1-name").text(name);
+            $("#alt-1-info").text(info);
+            
+            const element = document.getElementById("lower-third-1");
+            element.classList.remove("hide-anim", "animation-out");
+            element.classList.add("animation-in");
+        }
+
+        function hideLowerThird() {
+            const element = document.getElementById("lower-third-1");
+            element.classList.remove("animation-in");
+            element.classList.add("animation-out");
+        }
+
+        // Hardcoded Test: Terus panggil fungsi
+        $(document).ready(function() {
+            showLowerThird("GEMINI TEST", "Sedang menguji kod ringkas");
+        });
+    </script>
+</body>
+</html>
