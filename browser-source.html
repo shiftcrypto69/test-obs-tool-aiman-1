@@ -10,32 +10,46 @@
     <script src="common/js/jquery.js"></script>
 
     <style>
-        /* CSS tambahan untuk memastikan susunan 10 Lower Third tidak bertindih */
-        #display-container {
-            position: relative;
-            width: 1920px; /* Saiz standard Canvas OBS */
-            height: 1080px;
+        /* Memastikan kanvas lutsinar untuk OBS */
+        body {
+            background-color: transparent !important;
             overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Mengatur kedudukan setiap LT secara automatik supaya tidak bertindih jika dibuka serentak */
+        #display-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Kedudukan setiap LT supaya tersusun secara menegak */
         .alt {
             position: absolute;
             left: 50px;
             transition: all 0.5s ease-in-out;
         }
 
-        /* Contoh kedudukan dinamik berdasarkan ID (boleh diubahsuai) */
+        /* Penyelarasan jarak 10 Lower Third (Bottom-up) */
         #lower-third-1  { bottom: 50px; }
-        #lower-third-2  { bottom: 130px; }
-        #lower-third-3  { bottom: 210px; }
-        #lower-third-4  { bottom: 290px; }
-        #lower-third-5  { bottom: 370px; }
-        #lower-third-6  { bottom: 450px; }
-        #lower-third-7  { bottom: 530px; }
-        #lower-third-8  { bottom: 610px; }
-        #lower-third-9  { bottom: 690px; }
-        #lower-third-10 { bottom: 770px; }
+        #lower-third-2  { bottom: 140px; }
+        #lower-third-3  { bottom: 230px; }
+        #lower-third-4  { bottom: 320px; }
+        #lower-third-5  { bottom: 410px; }
+        #lower-third-6  { bottom: 500px; }
+        #lower-third-7  { bottom: 590px; }
+        #lower-third-8  { bottom: 680px; }
+        #lower-third-9  { bottom: 770px; }
+        #lower-third-10 { bottom: 860px; }
+
+        /* Memastikan text-mask berfungsi untuk kesan animasi muncul */
+        .text-mask {
+            overflow: hidden;
+            display: block;
+        }
     </style>
 </head>
 <body class="browser-source">
@@ -44,10 +58,11 @@
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
-        // Jana 10 bekas Lower Third secara dinamik (sama seperti fail asal v1.6)
+        // Jana 10 bekas Lower Third secara dinamik (Mengikut struktur asal v1.6)
         for (let i = 1; i <= 10; i++) {
             $('#display-container').append(`
                 <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
+                    <div class="graph-1"></div> 
                     <div class="text-content">
                         <div class="text-mask">
                             <div id="alt-${i}-name" style="font-weight:bold; font-size:2.2em;"></div>
@@ -56,6 +71,7 @@
                             <div id="alt-${i}-info" style="font-size:1.4em; color: #eee;"></div>
                         </div>
                     </div>
+                    <div class="graph-2"></div>
                 </div>
             `);
         }
@@ -68,23 +84,30 @@
             const infoEl = $(`#alt-${data.id}-info`);
 
             if (data.switch) {
-                // Masukkan teks
+                // 1. Masukkan teks
                 nameEl.text(data.name);
                 infoEl.text(data.info);
 
-                // Tampilkan animasi (Menggunakan class dari style-source.css)
-                target.show().removeClass('hide-anim').addClass('animation-in');
-                console.log("Memaparkan LT ID: " + data.id);
+                // 2. Tampilkan elemen & jalankan animasi
+                target.show();
+                // Delay sedikit supaya transition CSS boleh detect perubahan class
+                setTimeout(() => {
+                    target.removeClass('hide-anim').addClass('animation-in');
+                }, 10);
+                
+                console.log(`Memaparkan LT #${data.id}: ON`);
             } else {
-                // Sembunyikan animasi
+                // 1. Jalankan animasi keluar (Transition CSS)
                 target.addClass('hide-anim').removeClass('animation-in');
                 
-                // Tunggu animasi keluar selesai sebelum benar-benar sembunyi (fadeOut)
+                // 2. Sembunyikan elemen sepenuhnya selepas animasi tamat (500ms)
                 setTimeout(function() {
                     if (target.hasClass('hide-anim')) {
                         target.hide();
                     }
-                }, 500); 
+                }, 500);
+                
+                console.log(`Menyembunyikan LT #${data.id}: OFF`);
             }
         };
     </script>
