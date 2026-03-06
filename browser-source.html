@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
     <meta charset="utf-8">
-    <title>Lower Thirds Source - 10 Channels</title>
+    <title>OBS Source - Vertical 10 Channels</title>
     
     <link rel="stylesheet" href="common/css/style-control_panel.css">
     <link rel="stylesheet" href="common/css/style-source.css">
@@ -10,7 +10,7 @@
     <script src="common/js/jquery.js"></script>
 
     <style>
-        /* Memastikan kanvas lutsinar untuk OBS */
+        /* Memastikan canvas lutsinar dan saiz penuh OBS */
         body {
             background-color: transparent !important;
             overflow: hidden;
@@ -26,29 +26,34 @@
             height: 100%;
         }
 
-        /* Kedudukan setiap LT supaya tersusun secara menegak */
+        /* KEDUDUKAN: Kiri Atas (Top Left) secara menegak */
         .alt {
             position: absolute;
-            left: 50px;
+            left: 20px; /* Jarak dari kiri */
             transition: all 0.5s ease-in-out;
         }
 
-        /* Penyelarasan jarak 10 Lower Third (Bottom-up) */
-        #lower-third-1  { bottom: 50px; }
-        #lower-third-2  { bottom: 140px; }
-        #lower-third-3  { bottom: 230px; }
-        #lower-third-4  { bottom: 320px; }
-        #lower-third-5  { bottom: 410px; }
-        #lower-third-6  { bottom: 500px; }
-        #lower-third-7  { bottom: 590px; }
-        #lower-third-8  { bottom: 680px; }
-        #lower-third-9  { bottom: 770px; }
-        #lower-third-10 { bottom: 860px; }
+        /* Susunan 1-10 dari Atas ke Bawah */
+        #lower-third-1  { top: 20px; }
+        #lower-third-2  { top: 110px; }
+        #lower-third-3  { top: 200px; }
+        #lower-third-4  { top: 290px; }
+        #lower-third-5  { top: 380px; }
+        #lower-third-6  { top: 470px; }
+        #lower-third-7  { top: 560px; }
+        #lower-third-8  { top: 650px; }
+        #lower-third-9  { top: 740px; }
+        #lower-third-10 { top: 830px; }
 
-        /* Memastikan text-mask berfungsi untuk kesan animasi muncul */
+        /* Masking untuk kesan teks muncul */
         .text-mask {
             overflow: hidden;
             display: block;
+        }
+
+        /* Saiz teks yang disesuaikan untuk susunan rapat */
+        .text-content {
+            padding: 5px 15px !important;
         }
     </style>
 </head>
@@ -58,17 +63,17 @@
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
-        // Jana 10 bekas Lower Third secara dinamik (Mengikut struktur asal v1.6)
+        // Jana 10 bekas Lower Third secara dinamik
         for (let i = 1; i <= 10; i++) {
             $('#display-container').append(`
                 <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
                     <div class="graph-1"></div> 
                     <div class="text-content">
                         <div class="text-mask">
-                            <div id="alt-${i}-name" style="font-weight:bold; font-size:2.2em;"></div>
+                            <div id="alt-${i}-name" style="font-weight:bold; font-size:1.8em;"></div>
                         </div>
                         <div class="text-mask">
-                            <div id="alt-${i}-info" style="font-size:1.4em; color: #eee;"></div>
+                            <div id="alt-${i}-info" style="font-size:1.1em; color: #eee;"></div>
                         </div>
                     </div>
                     <div class="graph-2"></div>
@@ -76,7 +81,7 @@
             `);
         }
 
-        // Mendengar mesej daripada Control Panel (index.html)
+        // Mendengar mesej daripada Sleek Control Panel (index.html)
         bcp.onmessage = function(ev) {
             const data = ev.data;
             const target = $(`#lower-third-${data.id}`);
@@ -84,30 +89,29 @@
             const infoEl = $(`#alt-${data.id}-info`);
 
             if (data.switch) {
-                // 1. Masukkan teks
+                // Masukkan teks
                 nameEl.text(data.name);
                 infoEl.text(data.info);
 
-                // 2. Tampilkan elemen & jalankan animasi
+                // Tampilkan & Animasi Masuk
                 target.show();
-                // Delay sedikit supaya transition CSS boleh detect perubahan class
                 setTimeout(() => {
                     target.removeClass('hide-anim').addClass('animation-in');
-                }, 10);
+                }, 50);
                 
-                console.log(`Memaparkan LT #${data.id}: ON`);
+                console.log(`LT #${data.id} ON`);
             } else {
-                // 1. Jalankan animasi keluar (Transition CSS)
+                // Animasi Keluar
                 target.addClass('hide-anim').removeClass('animation-in');
                 
-                // 2. Sembunyikan elemen sepenuhnya selepas animasi tamat (500ms)
+                // Sembunyikan selepas animasi tamat
                 setTimeout(function() {
                     if (target.hasClass('hide-anim')) {
                         target.hide();
                     }
                 }, 500);
                 
-                console.log(`Menyembunyikan LT #${data.id}: OFF`);
+                console.log(`LT #${data.id} OFF`);
             }
         };
     </script>
