@@ -2,15 +2,14 @@
 <html lang="ms">
 <head>
     <meta charset="utf-8">
-    <title>OBS Source - Vertical 10 Channels</title>
+    <title>OBS Source - Tazkirah Edition</title>
     
-    <link rel="stylesheet" href="common/css/style-control_panel.css">
     <link rel="stylesheet" href="common/css/style-source.css">
     
     <script src="common/js/jquery.js"></script>
 
     <style>
-        /* Memastikan canvas lutsinar dan saiz penuh OBS */
+        /* Canvas 1920x1080 untuk OBS */
         body {
             background-color: transparent !important;
             overflow: hidden;
@@ -26,34 +25,22 @@
             height: 100%;
         }
 
-        /* KEDUDUKAN: Kiri Atas (Top Left) secara menegak */
-        .alt {
-            position: absolute;
-            left: 20px; /* Jarak dari kiri */
-            transition: all 0.5s ease-in-out;
+        /* Bekas Logo Masjid */
+        .logo-container {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
         }
 
-        /* Susunan 1-10 dari Atas ke Bawah */
-        #lower-third-1  { top: 20px; }
-        #lower-third-2  { top: 110px; }
-        #lower-third-3  { top: 200px; }
-        #lower-third-4  { top: 290px; }
-        #lower-third-5  { top: 380px; }
-        #lower-third-6  { top: 470px; }
-        #lower-third-7  { top: 560px; }
-        #lower-third-8  { top: 650px; }
-        #lower-third-9  { top: 740px; }
-        #lower-third-10 { top: 830px; }
-
-        /* Masking untuk kesan teks muncul */
-        .text-mask {
-            overflow: hidden;
-            display: block;
-        }
-
-        /* Saiz teks yang disesuaikan untuk susunan rapat */
-        .text-content {
-            padding: 5px 15px !important;
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Memberi sedikit bayang pada logo supaya nampak timbul */
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
         }
     </style>
 </head>
@@ -63,25 +50,30 @@
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
-        // Jana 10 bekas Lower Third secara dinamik
+        // Jana 10 bekas Lower Third secara dinamik dengan sokongan LOGO
         for (let i = 1; i <= 10; i++) {
             $('#display-container').append(`
-                <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
+                <div id="lower-third-${i}" class="alt left hide-anim" style="display:none;">
+                    
+                    <div class="logo-container">
+                        <img src="common/img/logo.png" alt="logo">
+                    </div>
+
                     <div class="graph-1"></div> 
+
                     <div class="text-content">
                         <div class="text-mask">
-                            <div id="alt-${i}-name" style="font-weight:bold; font-size:1.8em;"></div>
+                            <div id="alt-${i}-name" class="name-text"></div>
                         </div>
                         <div class="text-mask">
-                            <div id="alt-${i}-info" style="font-size:1.1em; color: #eee;"></div>
+                            <div id="alt-${i}-info" class="info-text"></div>
                         </div>
                     </div>
-                    <div class="graph-2"></div>
                 </div>
             `);
         }
 
-        // Mendengar mesej daripada Sleek Control Panel (index.html)
+        // Fungsi mendengar arahan dari Control Panel (index.html)
         bcp.onmessage = function(ev) {
             const data = ev.data;
             const target = $(`#lower-third-${data.id}`);
@@ -89,29 +81,26 @@
             const infoEl = $(`#alt-${data.id}-info`);
 
             if (data.switch) {
-                // Masukkan teks
+                // Masukkan teks dari panel ke dalam source
                 nameEl.text(data.name);
                 infoEl.text(data.info);
 
-                // Tampilkan & Animasi Masuk
+                // Paparkan dengan animasi
                 target.show();
                 setTimeout(() => {
                     target.removeClass('hide-anim').addClass('animation-in');
                 }, 50);
                 
-                console.log(`LT #${data.id} ON`);
             } else {
-                // Animasi Keluar
+                // Jalankan animasi keluar
                 target.addClass('hide-anim').removeClass('animation-in');
                 
-                // Sembunyikan selepas animasi tamat
+                // Sembunyikan elemen selepas animasi 0.6s tamat
                 setTimeout(function() {
                     if (target.hasClass('hide-anim')) {
                         target.hide();
                     }
-                }, 500);
-                
-                console.log(`LT #${data.id} OFF`);
+                }, 600);
             }
         };
     </script>
