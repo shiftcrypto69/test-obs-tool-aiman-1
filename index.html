@@ -10,92 +10,118 @@
         body.panel {
             background-color: #121212;
             color: #efefef;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 10px;
+            overflow-x: hidden;
         }
 
         h2 {
-            font-size: 14px;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             color: #007bff;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #333;
+            margin: 5px 0 15px 0;
+            border-bottom: 2px solid #007bff;
             padding-bottom: 5px;
+            display: inline-block;
         }
 
-        /* Layout Menegak */
+        /* Layout Menegak - Compact untuk Dock OBS */
         #container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-width: 300px; /* Lebar sesuai untuk dock kiri OBS */
+            gap: 12px;
+            max-width: 100%;
         }
 
         .lt-row {
-            background: #1e1e1e;
-            border-radius: 6px;
-            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 12px;
             border: 1px solid #2a2a2a;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: border-color 0.3s;
+        }
+
+        .lt-row:hover {
+            border-color: #3a3a3a;
         }
 
         .lt-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .lt-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #888;
+            font-size: 11px;
+            font-weight: 800;
+            color: #666;
+            text-transform: uppercase;
         }
 
-        /* Input Ringkas */
+        /* Input Styling */
         input {
             width: 100%;
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            color: white;
-            padding: 6px;
-            font-size: 12px;
+            background: #252525;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px;
+            font-size: 13px;
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             box-sizing: border-box;
+            outline: none;
         }
 
-        /* Slot Buttons Kompak */
+        input:focus {
+            border-color: #007bff;
+            background: #2a2a2a;
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        /* Slot Buttons Grid */
         .slot-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 3px;
-            margin-bottom: 8px;
+            gap: 4px;
+            margin-top: 8px;
         }
 
         .slot-btn {
             background: #333;
-            border: none;
-            color: #aaa;
-            font-size: 9px;
-            padding: 4px 0;
+            border: 1px solid #444;
+            color: #888;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 5px 0;
             border-radius: 3px;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slot-btn:hover {
+            background: #444;
+            color: #fff;
         }
 
         .slot-btn.active {
-            background: #444;
+            background: rgba(0, 123, 255, 0.1);
             color: #007bff;
-            border: 1px solid #007bff;
+            border-color: #007bff;
         }
 
-        /* Toggle Switch Moden */
+        /* Toggle Switch */
         .switch {
             position: relative;
             display: inline-block;
-            width: 34px;
-            height: 18px;
+            width: 38px;
+            height: 20px;
         }
 
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -104,71 +130,94 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #444;
+            background-color: #333;
             transition: .3s;
-            border-radius: 18px;
+            border-radius: 20px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
             height: 14px; width: 14px;
-            left: 2px; bottom: 2px;
-            background-color: white;
+            left: 3px; bottom: 3px;
+            background-color: #888;
             transition: .3s;
             border-radius: 50%;
         }
 
         input:checked + .slider { background-color: #28a745; }
-        input:checked + .slider:before { transform: translateX(16px); }
+        input:checked + .slider:before { 
+            transform: translateX(18px); 
+            background-color: white;
+        }
 
     </style>
 </head>
 <body class="panel">
-    <h2>LT Control</h2>
-    <div id="container"></div>
+    <h2>LT Control Panel</h2>
+    
+    <div id="container">
+        </div>
 
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
+        // Jana 10 baris LT secara automatik
         for (let i = 1; i <= 10; i++) {
             $('#container').append(`
                 <div class="lt-row">
                     <div class="lt-header">
-                        <span class="lt-title">LT #${i}</span>
+                        <span class="lt-title">Slot Channel #${i}</span>
                         <label class="switch">
                             <input type="checkbox" id="toggle-${i}" onchange="sendToggle(${i})">
                             <span class="slider"></span>
                         </label>
                     </div>
-                    <input type="text" id="alt-${i}-name" placeholder="Nama">
-                    <input type="text" id="alt-${i}-info" placeholder="Info">
-                    <div class="slot-grid" id="slots-${i}"></div>
+                    <input type="text" id="alt-${i}-name" placeholder="Tajuk Utama (cth: KULIAH DHUHA)">
+                    <input type="text" id="alt-${i}-info" placeholder="Penceramah / Info (Teks Kuning)">
+                    
+                    <div class="slot-grid" id="slots-${i}">
+                        </div>
                 </div>
             `);
 
             for (let s = 1; s <= 10; s++) {
                 $(`#slots-${i}`).append(`
-                    <button class="slot-btn" id="btn-lt-${i}-s-${s}" onclick="handleSlot(${i}, ${s})">S${s}</button>
+                    <button class="slot-btn" id="btn-lt-${i}-s-${s}" onclick="handleSlot(${i}, ${s})" title="Simpan/Muat Slot ${s}">S${s}</button>
                 `);
             }
         }
 
+        // Fungsi Simpan & Muat (LocalStorage)
         function handleSlot(ltId, slotId) {
-            const n = $(`#alt-${ltId}-name`);
-            const f = $(`#alt-${ltId}-info`);
-            const key = `lt-${ltId}-s-${slotId}`;
-            const saved = localStorage.getItem(key);
+            const nameInput = $(`#alt-${ltId}-name`);
+            const infoInput = $(`#alt-${ltId}-info`);
+            const key = `lt-storage-${ltId}-s-${slotId}`;
+            const savedData = localStorage.getItem(key);
 
-            if (n.val() === "" && saved) {
-                const data = JSON.parse(saved);
-                n.val(data.name); f.val(data.info);
-            } else {
-                localStorage.setItem(key, JSON.stringify({name: n.val(), info: f.val()}));
+            // Jika input kosong dan ada data disimpan, kita MUAT (LOAD)
+            if (nameInput.val() === "" && savedData) {
+                const data = JSON.parse(savedData);
+                nameInput.val(data.name);
+                infoInput.val(data.info);
+                
+                // Jika sedang ON, kemaskini terus ke OBS
+                if ($(`#toggle-${ltId}`).is(':checked')) {
+                    sendToggle(ltId);
+                }
+            } 
+            // Jika input ada teks, kita SIMPAN (SAVE)
+            else if (nameInput.val() !== "") {
+                const dataToSave = {
+                    name: nameInput.val(),
+                    info: infoInput.val()
+                };
+                localStorage.setItem(key, JSON.stringify(dataToSave));
                 $(`#btn-lt-${ltId}-s-${slotId}`).addClass('active');
             }
         }
 
+        // Fungsi hantar data ke OBS (browser-source.html)
         function sendToggle(id) {
             const isChecked = $(`#toggle-${id}`).is(':checked');
             bcp.postMessage({
@@ -179,10 +228,13 @@
             });
         }
 
+        // Semak butang yang ada data tersimpan semasa mula
         $(document).ready(function() {
             for (let i = 1; i <= 10; i++) {
                 for (let s = 1; s <= 10; s++) {
-                    if (localStorage.getItem(`lt-${i}-s-${s}`)) $(`#btn-lt-${i}-s-${s}`).addClass('active');
+                    if (localStorage.getItem(`lt-storage-${i}-s-${s}`)) {
+                        $(`#btn-lt-${i}-s-${s}`).addClass('active');
+                    }
                 }
             }
         });
