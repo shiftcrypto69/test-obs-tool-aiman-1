@@ -25,7 +25,7 @@
     z-index: 10;
 }
 
-/* KEDUDUKAN MENEGAK (Bottom-Up) - Menuju ke penjuru kiri bawah */
+/* KEDUDUKAN MENEGAK (Bottom-Up) - 10 Slot Lengkap */
 #lower-third-1  { bottom: 60px; }
 #lower-third-2  { bottom: 140px; }
 #lower-third-3  { bottom: 220px; }
@@ -54,7 +54,7 @@
     height: 45px;
     background: #cc0000; /* Warna merah seperti rujukan */
     box-shadow: 0 0 10px rgba(204, 0, 0, 0.3);
-    margin-right: 0px; /* Rapat dengan text-content */
+    margin-right: 0px; 
 }
 
 /* Bekas Teks - Kompak & Blur */
@@ -75,13 +75,12 @@
 
 /* Gaya Teks Nama (Putih) */
 [id^="alt-"][id$="-name"] {
-    font-size: 20px; /* Saiz kompak profesional */
+    font-size: 20px; 
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     line-height: 1.2;
-    /* Animasi sliding text */
     transform: translateY(100%);
     transition: transform 0.5s ease 0.2s;
 }
@@ -102,7 +101,7 @@
     transform: translateY(0);
 }
 
-/* Grafik Tambahan (graph-2) */
+/* Grafik Tambahan */
 .graph-2 {
     display: none;
 }
