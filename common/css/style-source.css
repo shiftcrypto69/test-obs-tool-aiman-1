@@ -1,0 +1,56 @@
+/* Layout Asas Lower Third */
+.browser-source {
+    overflow: hidden;
+    background-color: transparent;
+}
+
+.alt {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+    bottom: 50px; /* Kedudukan dari bawah */
+    left: 50px;   /* Kedudukan dari kiri */
+}
+
+/* Animasi In/Out sebijik fail asal */
+.animation-in {
+    opacity: 1 !important;
+    transform: translateX(0);
+}
+
+.hide-anim {
+    opacity: 0;
+    transform: translateX(-100px);
+}
+
+/* Rupa Paras Text (Sama seperti style-1 fail asal) */
+.text-content {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-left: 5px solid #007bff; /* Warna biru profesional */
+    font-family: 'Arial', sans-serif;
+}
+
+.text-mask {
+    overflow: hidden;
+}
+
+[id^="alt-"][id$="-name"] {
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+[id^="alt-"][id$="-info"] {
+    font-size: 18px;
+    color: #cccccc;
+}
+
+/* Styling untuk 10 slot/LT supaya tidak bertindih */
+#lower-third-2 { bottom: 120px; }
+#lower-third-3 { bottom: 190px; }
+#lower-third-4 { bottom: 260px; }
+/* ... tambahkan jika mahu papar serentak secara menegak ... */
