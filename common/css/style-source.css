@@ -1,5 +1,5 @@
-/* Animated Lower Thirds v1.6 - Source Style
-   Sleek Vertical Edition (Top-Left Position)
+/* Animated Lower Thirds v1.6 - Compact Bottom-Left Edition 
+   Gabungan Animasi Sleek & Rupa Paras Tazkirah (Merah-Kuning)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -18,24 +18,24 @@
     display: flex;
     align-items: center;
     opacity: 0;
-    left: 40px; /* Jarak dari tepi kiri skrin */
+    left: 60px; /* Jarak dari tepi kiri skrin */
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     font-family: 'Inter', 'Segoe UI', sans-serif;
     pointer-events: none;
     z-index: 10;
 }
 
-/* KEDUDUKAN MENEGAK (Top-Down) */
-#lower-third-1  { top: 40px; }
-#lower-third-2  { top: 130px; }
-#lower-third-3  { top: 220px; }
-#lower-third-4  { top: 310px; }
-#lower-third-5  { top: 400px; }
-#lower-third-6  { top: 490px; }
-#lower-third-7  { top: 580px; }
-#lower-third-8  { top: 670px; }
-#lower-third-9  { top: 760px; }
-#lower-third-10 { top: 850px; }
+/* KEDUDUKAN MENEGAK (Bottom-Up) - Menuju ke penjuru kiri bawah */
+#lower-third-1  { bottom: 60px; }
+#lower-third-2  { bottom: 140px; }
+#lower-third-3  { bottom: 220px; }
+#lower-third-4  { bottom: 300px; }
+#lower-third-5  { bottom: 380px; }
+#lower-third-6  { bottom: 460px; }
+#lower-third-7  { bottom: 540px; }
+#lower-third-8  { bottom: 620px; }
+#lower-third-9  { bottom: 700px; }
+#lower-third-10 { bottom: 780px; }
 
 /* Animasi In/Out */
 .animation-in {
@@ -45,26 +45,27 @@
 
 .hide-anim {
     opacity: 0 !important;
-    transform: translateX(-50px);
+    transform: translateX(-30px);
 }
 
-/* Grafik Garisan (graph-1) - Memberikan kesan "Sleek" */
+/* Grafik Garisan (graph-1) - Bar Merah Kecil */
 .graph-1 {
-    width: 6px;
-    height: 60px;
-    background: #007bff; /* Warna biru tema */
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
-    margin-right: 2px;
+    width: 4px;
+    height: 45px;
+    background: #cc0000; /* Warna merah seperti rujukan */
+    box-shadow: 0 0 10px rgba(204, 0, 0, 0.3);
+    margin-right: 0px; /* Rapat dengan text-content */
 }
 
-/* Bekas Teks */
+/* Bekas Teks - Kompak & Blur */
 .text-content {
-    background: rgba(15, 15, 15, 0.85); /* Hitam lutsinar yang elegan */
-    backdrop-filter: blur(5px); /* Kesan blur di belakang teks (Chrome) */
-    padding: 10px 25px;
+    background: rgba(15, 15, 15, 0.85); /* Hitam lutsinar elegan */
+    backdrop-filter: blur(5px); /* Kesan blur latar belakang */
+    padding: 6px 20px;
     border-radius: 0 4px 4px 0;
-    min-width: 200px;
+    min-width: 180px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 }
 
 .text-mask {
@@ -72,24 +73,24 @@
     display: block;
 }
 
-/* Gaya Teks Nama */
+/* Gaya Teks Nama (Putih) */
 [id^="alt-"][id$="-name"] {
-    font-size: 32px;
+    font-size: 20px; /* Saiz kompak profesional */
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     line-height: 1.2;
     /* Animasi sliding text */
     transform: translateY(100%);
     transition: transform 0.5s ease 0.2s;
 }
 
-/* Gaya Teks Info */
+/* Gaya Teks Info (Kuning) */
 [id^="alt-"][id$="-info"] {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
-    color: #007bff; /* Warna info mengikut tema biru */
+    color: #ffff00; /* Warna kuning mengikut rujukan */
     line-height: 1.2;
     transform: translateY(100%);
     transition: transform 0.5s ease 0.3s;
@@ -101,7 +102,7 @@
     transform: translateY(0);
 }
 
-/* Grafik Tambahan (graph-2) - Jika perlu */
+/* Grafik Tambahan (graph-2) */
 .graph-2 {
-    display: none; /* Disembunyikan untuk rupa minimalist */
+    display: none;
 }
