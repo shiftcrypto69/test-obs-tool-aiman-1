@@ -1,37 +1,90 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <link rel="stylesheet" href="../common/css/style-source.css">
-    <script src="../common/js/jquery.js"></script>
+    <meta charset="utf-8">
+    <title>Lower Thirds Source - 10 Channels</title>
+    
+    <link rel="stylesheet" href="common/css/style-control_panel.css">
+    <link rel="stylesheet" href="common/css/style-source.css">
+    
+    <script src="common/js/jquery.js"></script>
+
+    <style>
+        /* CSS tambahan untuk memastikan susunan 10 Lower Third tidak bertindih */
+        #display-container {
+            position: relative;
+            width: 1920px; /* Saiz standard Canvas OBS */
+            height: 1080px;
+            overflow: hidden;
+        }
+
+        /* Mengatur kedudukan setiap LT secara automatik supaya tidak bertindih jika dibuka serentak */
+        .alt {
+            position: absolute;
+            left: 50px;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Contoh kedudukan dinamik berdasarkan ID (boleh diubahsuai) */
+        #lower-third-1  { bottom: 50px; }
+        #lower-third-2  { bottom: 130px; }
+        #lower-third-3  { bottom: 210px; }
+        #lower-third-4  { bottom: 290px; }
+        #lower-third-5  { bottom: 370px; }
+        #lower-third-6  { bottom: 450px; }
+        #lower-third-7  { bottom: 530px; }
+        #lower-third-8  { bottom: 610px; }
+        #lower-third-9  { bottom: 690px; }
+        #lower-third-10 { bottom: 770px; }
+    </style>
 </head>
-<body>
+<body class="browser-source">
     <div id="display-container"></div>
 
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
-        // Sediakan 10 bekas Lower Third
+        // Jana 10 bekas Lower Third secara dinamik (sama seperti fail asal v1.6)
         for (let i = 1; i <= 10; i++) {
             $('#display-container').append(`
                 <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
                     <div class="text-content">
-                        <div id="alt-${i}-name" style="font-weight:bold; font-size:2em;"></div>
-                        <div id="alt-${i}-info" style="font-size:1.2em;"></div>
+                        <div class="text-mask">
+                            <div id="alt-${i}-name" style="font-weight:bold; font-size:2.2em;"></div>
+                        </div>
+                        <div class="text-mask">
+                            <div id="alt-${i}-info" style="font-size:1.4em; color: #eee;"></div>
+                        </div>
                     </div>
                 </div>
             `);
         }
 
+        // Mendengar mesej daripada Control Panel (index.html)
         bcp.onmessage = function(ev) {
             const data = ev.data;
             const target = $(`#lower-third-${data.id}`);
+            const nameEl = $(`#alt-${data.id}-name`);
+            const infoEl = $(`#alt-${data.id}-info`);
 
             if (data.switch) {
-                $(`#alt-${data.id}-name`).text(data.name);
-                $(`#alt-${data.id}-info`).text(data.info);
-                target.fadeIn().removeClass('hide-anim');
+                // Masukkan teks
+                nameEl.text(data.name);
+                infoEl.text(data.info);
+
+                // Tampilkan animasi (Menggunakan class dari style-source.css)
+                target.show().removeClass('hide-anim').addClass('animation-in');
+                console.log("Memaparkan LT ID: " + data.id);
             } else {
-                target.fadeOut();
+                // Sembunyikan animasi
+                target.addClass('hide-anim').removeClass('animation-in');
+                
+                // Tunggu animasi keluar selesai sebelum benar-benar sembunyi (fadeOut)
+                setTimeout(function() {
+                    if (target.hasClass('hide-anim')) {
+                        target.hide();
+                    }
+                }, 500); 
             }
         };
     </script>
