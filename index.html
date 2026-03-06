@@ -2,139 +2,112 @@
 <html lang="ms">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>10x10 Lower Thirds Control Panel</title>
+    <title>Lower Thirds Source - 10 Channels</title>
     
     <link rel="stylesheet" href="common/css/style-control_panel.css">
+    <link rel="stylesheet" href="common/css/style-source.css">
     
     <script src="common/js/jquery.js"></script>
 
     <style>
-        /* Tambahan styling untuk memastikan grid nampak kemas */
-        .lt-section { 
-            border: 1px solid #444; 
-            margin-bottom: 20px; 
-            padding: 15px; 
-            background: #252525; 
-            color: white; 
-            border-radius: 8px;
+        /* Memastikan canvas adalah lutsinar dan mengikut saiz OBS */
+        body {
+            background-color: transparent !important;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+            margin: 0;
+            padding: 0;
         }
-        .slot-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 5px; 
-            margin-top: 10px; 
-            margin-bottom: 15px;
+
+        #display-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
         }
-        .slot-btn { 
-            padding: 8px; 
-            cursor: pointer; 
-            background: #444; 
-            color: white; 
-            border: none; 
-            border-radius: 4px;
-            font-size: 11px;
+
+        /* Kedudukan setiap LT supaya tersusun secara menegak */
+        .alt {
+            position: absolute;
+            left: 50px;
+            transition: all 0.5s ease-in-out;
         }
-        .slot-btn.active { background: #007bff; }
-        .slot-btn:hover { background: #666; }
-        
-        input { 
-            width: calc(100% - 20px); 
-            margin-bottom: 10px; 
-            padding: 8px;
-            background: #333; 
-            color: white; 
-            border: 1px solid #555; 
-            border-radius: 4px;
+
+        /* Susunan 10 Lower Third dari bawah ke atas */
+        #lower-third-1  { bottom: 50px; }
+        #lower-third-2  { bottom: 140px; }
+        #lower-third-3  { bottom: 230px; }
+        #lower-third-4  { bottom: 320px; }
+        #lower-third-5  { bottom: 410px; }
+        #lower-third-6  { bottom: 500px; }
+        #lower-third-7  { bottom: 590px; }
+        #lower-third-8  { bottom: 680px; }
+        #lower-third-9  { bottom: 770px; }
+        #lower-third-10 { bottom: 860px; }
+
+        /* Memastikan text-mask berfungsi untuk kesan "teks muncul" */
+        .text-mask {
+            overflow: hidden;
+            display: block;
         }
-        
-        .control-btns { display: flex; gap: 10px; }
-        .btn-on { background: #28a745; color: white; border: none; padding: 10px; flex: 1; border-radius: 4px; cursor: pointer; font-weight: bold;}
-        .btn-off { background: #dc3545; color: white; border: none; padding: 10px; flex: 1; border-radius: 4px; cursor: pointer; font-weight: bold;}
     </style>
 </head>
-<body class="panel">
-    <h1>Control Panel (10 Lower Thirds x 10 Slots)</h1>
-    <div id="container"></div>
+<body class="browser-source">
+    <div id="display-container"></div>
 
     <script>
         const bcp = new BroadcastChannel('obs-lower-thirds-channel');
 
-        // Jana 10 Seksyen Lower Third
+        // Jana 10 bekas Lower Third (Mengikut struktur HTML v1.6)
         for (let i = 1; i <= 10; i++) {
-            $('#container').append(`
-                <div class="lt-section" id="section-${i}">
-                    <h3>Lower Third #${i}</h3>
-                    <input type="text" id="alt-${i}-name" placeholder="Nama untuk LT ${i}">
-                    <input type="text" id="alt-${i}-info" placeholder="Info untuk LT ${i}">
-                    
-                    <div class="slot-grid" id="slots-${i}">
+            $('#display-container').append(`
+                <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
+                    <div class="graph-1"></div> <div class="text-content">
+                        <div class="text-mask">
+                            <div id="alt-${i}-name"></div>
                         </div>
-                    
-                    <div class="control-btns">
-                        <button class="btn-on" onclick="toggleLT(${i}, true)">ON</button>
-                        <button class="btn-off" onclick="toggleLT(${i}, false)">OFF</button>
+                        <div class="text-mask">
+                            <div id="alt-${i}-info"></div>
+                        </div>
                     </div>
+                    <div class="graph-2"></div>
                 </div>
             `);
-
-            // Jana 10 Slot memori untuk setiap Lower Third
-            for (let s = 1; s <= 10; s++) {
-                $(`#slots-${i}`).append(`
-                    <button class="slot-btn" id="btn-lt-${i}-s-${s}" onclick="handleSlotClick(${i}, ${s})">S${s}</button>
-                `);
-            }
         }
 
-        // Fungsi Simpan (Klik Kanan/Hold tidak diset, kita guna klik biasa untuk Load & Simpan serentak untuk mudahkan test)
-        function handleSlotClick(ltId, slotId) {
-            const nameField = $(`#alt-${ltId}-name`);
-            const infoField = $(`#alt-${ltId}-info`);
-            
-            // Cuba dapatkan data sedia ada
-            const savedData = localStorage.getItem(`lt-${ltId}-slot-${slotId}`);
+        // Mendengar arahan dari index.html
+        bcp.onmessage = function(ev) {
+            const data = ev.data;
+            const target = $(`#lower-third-${data.id}`);
+            const nameEl = $(`#alt-${data.id}-name`);
+            const infoEl = $(`#alt-${data.id}-info`);
 
-            if (nameField.val() === "" && savedData) {
-                // Jika input kosong dan ada data disimpan, LOAD data
-                const data = JSON.parse(savedData);
-                nameField.val(data.name);
-                infoField.val(data.info);
-                console.log(`Slot ${slotId} dimuatkan untuk LT ${ltId}`);
-            } else {
-                // Simpan data baru
-                const dataToSave = {
-                    name: nameField.val(),
-                    info: infoField.val()
-                };
-                localStorage.setItem(`lt-${ltId}-slot-${slotId}`, JSON.stringify(dataToSave));
+            if (data.switch) {
+                // Masukkan teks baru
+                nameEl.text(data.name);
+                infoEl.text(data.info);
+
+                // Jalankan animasi masuk
+                target.show();
+                setTimeout(() => {
+                    target.removeClass('hide-anim').addClass('animation-in');
+                }, 10);
                 
-                // Highlight butang yang ada data
-                $(`#btn-lt-${ltId}-s-${slotId}`).addClass('active');
-                alert(`LT ${ltId} Slot ${slotId} Berjaya Disimpan!`);
-            }
-        }
-
-        // Fungsi ON/OFF ke OBS
-        function toggleLT(id, status) {
-            const data = {
-                id: id,
-                name: $(`#alt-${id}-name`).val(),
-                info: $(`#alt-${id}-info`).val(),
-                switch: status
-            };
-            bcp.postMessage(data);
-        }
-
-        // Check data sedia ada pada permulaan (Hardcoded Test Check)
-        $(document).ready(function() {
-            for (let i = 1; i <= 10; i++) {
-                for (let s = 1; s <= 10; s++) {
-                    if (localStorage.getItem(`lt-${i}-slot-${s}`)) {
-                        $(`#btn-lt-${i}-s-${s}`).addClass('active');
+                console.log(`LT ${data.id} is now ON`);
+            } else {
+                // Jalankan animasi keluar
+                target.addClass('hide-anim').removeClass('animation-in');
+                
+                // Sembunyikan elemen selepas animasi tamat (0.5s)
+                setTimeout(() => {
+                    if (target.hasClass('hide-anim')) {
+                        target.hide();
                     }
-                }
+                }, 500);
+                
+                console.log(`LT ${data.id} is now OFF`);
             }
-        });
+        };
     </script>
 </body>
 </html>
