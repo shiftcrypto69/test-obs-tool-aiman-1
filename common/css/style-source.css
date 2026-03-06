@@ -1,56 +1,107 @@
-/* Layout Asas Lower Third */
+/* Animated Lower Thirds v1.6 - Source Style
+   Sleek Vertical Edition (Top-Left Position)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
 .browser-source {
     overflow: hidden;
-    background-color: transparent;
+    background-color: transparent !important;
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
 }
 
+/* Layout Asas Lower Third */
 .alt {
     position: absolute;
     display: flex;
     align-items: center;
     opacity: 0;
-    transition: all 0.5s ease-in-out;
-    bottom: 50px; /* Kedudukan dari bawah */
-    left: 50px;   /* Kedudukan dari kiri */
+    left: 40px; /* Jarak dari tepi kiri skrin */
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    pointer-events: none;
+    z-index: 10;
 }
 
-/* Animasi In/Out sebijik fail asal */
+/* KEDUDUKAN MENEGAK (Top-Down) */
+#lower-third-1  { top: 40px; }
+#lower-third-2  { top: 130px; }
+#lower-third-3  { top: 220px; }
+#lower-third-4  { top: 310px; }
+#lower-third-5  { top: 400px; }
+#lower-third-6  { top: 490px; }
+#lower-third-7  { top: 580px; }
+#lower-third-8  { top: 670px; }
+#lower-third-9  { top: 760px; }
+#lower-third-10 { top: 850px; }
+
+/* Animasi In/Out */
 .animation-in {
     opacity: 1 !important;
     transform: translateX(0);
 }
 
 .hide-anim {
-    opacity: 0;
-    transform: translateX(-100px);
+    opacity: 0 !important;
+    transform: translateX(-50px);
 }
 
-/* Rupa Paras Text (Sama seperti style-1 fail asal) */
+/* Grafik Garisan (graph-1) - Memberikan kesan "Sleek" */
+.graph-1 {
+    width: 6px;
+    height: 60px;
+    background: #007bff; /* Warna biru tema */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    margin-right: 2px;
+}
+
+/* Bekas Teks */
 .text-content {
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-left: 5px solid #007bff; /* Warna biru profesional */
-    font-family: 'Arial', sans-serif;
+    background: rgba(15, 15, 15, 0.85); /* Hitam lutsinar yang elegan */
+    backdrop-filter: blur(5px); /* Kesan blur di belakang teks (Chrome) */
+    padding: 10px 25px;
+    border-radius: 0 4px 4px 0;
+    min-width: 200px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .text-mask {
     overflow: hidden;
+    display: block;
 }
 
+/* Gaya Teks Nama */
 [id^="alt-"][id$="-name"] {
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    /* Animasi sliding text */
+    transform: translateY(100%);
+    transition: transform 0.5s ease 0.2s;
 }
 
+/* Gaya Teks Info */
 [id^="alt-"][id$="-info"] {
     font-size: 18px;
-    color: #cccccc;
+    font-weight: 400;
+    color: #007bff; /* Warna info mengikut tema biru */
+    line-height: 1.2;
+    transform: translateY(100%);
+    transition: transform 0.5s ease 0.3s;
 }
 
-/* Styling untuk 10 slot/LT supaya tidak bertindih */
-#lower-third-2 { bottom: 120px; }
-#lower-third-3 { bottom: 190px; }
-#lower-third-4 { bottom: 260px; }
-/* ... tambahkan jika mahu papar serentak secara menegak ... */
+/* Gerakkan teks ke atas apabila LT aktif */
+.animation-in [id^="alt-"][id$="-name"],
+.animation-in [id^="alt-"][id$="-info"] {
+    transform: translateY(0);
+}
+
+/* Grafik Tambahan (graph-2) - Jika perlu */
+.graph-2 {
+    display: none; /* Disembunyikan untuk rupa minimalist */
+}
