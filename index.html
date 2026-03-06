@@ -1,41 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
+    <meta charset="utf-8">
+    <title>10x10 Lower Thirds Control</title>
+    <link rel="stylesheet" href="../common/css/style-control_panel.css">
+    <script src="../common/js/jquery.js"></script>
     <style>
-        /* Masukkan hanya CSS asas dari style-source.css di sini */
-        .hide-anim { display: none; }
-        .animation-in { /* kod animasi masuk */ }
-        .animation-out { /* kod animasi keluar */ }
+        .lt-section { border: 1px solid #444; margin-bottom: 20px; padding: 15px; background: #222; color: white; }
+        .slot-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
+        .slot-btn { padding: 5px; cursor: pointer; background: #444; color: white; border: none; }
+        .slot-btn.active { background: #007bff; }
+        input { width: 100%; margin-bottom: 5px; background: #333; color: white; border: 1px solid #555; }
     </style>
 </head>
 <body>
-    <div id="lower-third-1" class="alt left style-1 hide-anim">
-        <div id="alt-1-name">NAMA TEST</div>
-        <div id="alt-1-info">INFO TEST</div>
-    </div>
+    <h1>Control Panel (10 Lower Thirds x 10 Slots)</h1>
+    <div id="container"></div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Versi Ringkas tanpa Timer/Slot yang kompleks
-        function showLowerThird(name, info) {
-            $("#alt-1-name").text(name);
-            $("#alt-1-info").text(info);
-            
-            const element = document.getElementById("lower-third-1");
-            element.classList.remove("hide-anim", "animation-out");
-            element.classList.add("animation-in");
+        const bcp = new BroadcastChannel('obs-lower-thirds-channel');
+
+        // Jana 10 Seksyen
+        for (let i = 1; i <= 10; i++) {
+            $('#container').append(`
+                <div class="lt-section" id="section-${i}">
+                    <h3>Lower Third #${i}</h3>
+                    <input type="text" id="alt-${i}-name" placeholder="Nama untuk LT ${i}">
+                    <input type="text" id="alt-${i}-info" placeholder="Info untuk LT ${i}">
+                    <div class="slot-grid" id="slots-${i}"></div>
+                    <button onclick="toggleLT(${i}, true)" style="background:green; color:white;">ON</button>
+                    <button onclick="toggleLT(${i}, false)" style="background:red; color:white;">OFF</button>
+                </div>
+            `);
+
+            // Jana 10 Slot untuk setiap seksyen
+            for (let s = 1; s <= 10; s++) {
+                $(`#slots-${i}`).append(`
+                    <button class="slot-btn" onclick="saveToSlot(${i}, ${s})">S${s}</button>
+                `);
+            }
         }
 
-        function hideLowerThird() {
-            const element = document.getElementById("lower-third-1");
-            element.classList.remove("animation-in");
-            element.classList.add("animation-out");
+        function saveToSlot(ltId, slotId) {
+            const name = $(`#alt-${ltId}-name`).val();
+            const info = $(`#alt-${ltId}-info`).val();
+            localStorage.setItem(`lt-${ltId}-slot-${slotId}`, JSON.stringify({name, info}));
+            alert(`LT ${ltId} Slot ${slotId} disimpan!`);
         }
 
-        // Hardcoded Test: Terus panggil fungsi
-        $(document).ready(function() {
-            showLowerThird("GEMINI TEST", "Sedang menguji kod ringkas");
-        });
+        function toggleLT(id, status) {
+            const data = {
+                id: id,
+                name: $(`#alt-${id}-name`).val(),
+                info: $(`#alt-${id}-info`).val(),
+                switch: status
+            };
+            bcp.postMessage(data);
+        }
     </script>
 </body>
 </html>
