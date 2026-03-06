@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <link rel="stylesheet" href="../common/css/style-source.css">
+    <script src="../common/js/jquery.js"></script>
+</head>
+<body>
+    <div id="display-container"></div>
+
+    <script>
+        const bcp = new BroadcastChannel('obs-lower-thirds-channel');
+
+        // Sediakan 10 bekas Lower Third
+        for (let i = 1; i <= 10; i++) {
+            $('#display-container').append(`
+                <div id="lower-third-${i}" class="alt left style-1 hide-anim" style="display:none;">
+                    <div class="text-content">
+                        <div id="alt-${i}-name" style="font-weight:bold; font-size:2em;"></div>
+                        <div id="alt-${i}-info" style="font-size:1.2em;"></div>
+                    </div>
+                </div>
+            `);
+        }
+
+        bcp.onmessage = function(ev) {
+            const data = ev.data;
+            const target = $(`#lower-third-${data.id}`);
+
+            if (data.switch) {
+                $(`#alt-${data.id}-name`).text(data.name);
+                $(`#alt-${data.id}-info`).text(data.info);
+                target.fadeIn().removeClass('hide-anim');
+            } else {
+                target.fadeOut();
+            }
+        };
+    </script>
+</body>
+</html>
